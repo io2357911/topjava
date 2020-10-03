@@ -2,14 +2,14 @@ package ru.javawebinar.topjava.crud;
 
 import ru.javawebinar.topjava.model.Meal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class InMemoryMealCrud implements IMealCrud {
     private int counter = 0;
-    private Map<Integer, Meal> mealMap = new HashMap<>();
+    private final Map<Integer, Meal> mealMap = new HashMap<>();
 
     @Override
     public int add(Meal meal) {
@@ -40,7 +40,7 @@ public class InMemoryMealCrud implements IMealCrud {
     @Override
     public List<Meal> getList() {
         synchronized (mealMap) {
-            return mealMap.values().stream().collect(Collectors.toList());
+            return new ArrayList<>(mealMap.values());
         }
     }
 
