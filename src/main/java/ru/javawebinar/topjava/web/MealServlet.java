@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.crud.IMealCrud;
+import ru.javawebinar.topjava.crud.ICrud;
 import ru.javawebinar.topjava.crud.InMemoryMealCrud;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
@@ -31,7 +31,7 @@ public class MealServlet extends HttpServlet {
 
     private static final Logger log = getLogger(MealServlet.class);
 
-    private final IMealCrud mealCrud;
+    private final ICrud<Meal> mealCrud;
 
     public MealServlet() {
         mealCrud = new InMemoryMealCrud();

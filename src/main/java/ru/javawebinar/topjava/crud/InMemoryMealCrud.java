@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryMealCrud implements IMealCrud {
+public class InMemoryMealCrud implements ICrud<Meal> {
     private int counter = 0;
     private final Map<Integer, Meal> mealMap = new HashMap<>();
 
