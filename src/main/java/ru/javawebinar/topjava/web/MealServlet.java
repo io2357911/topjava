@@ -23,7 +23,7 @@ import static ru.javawebinar.topjava.util.MealsUtil.filteredByStreams;
 
 public class MealServlet extends HttpServlet {
     private static final String MEALS_JSP = "meals.jsp";
-    private static final String EDIT_MEALS_JSP = "editMeals.jsp";
+    private static final String MEAL_JSP = "meal.jsp";
 
     private static final String ACTION_ADD = "add";
     private static final String ACTION_UPDATE = "update";
@@ -63,8 +63,8 @@ public class MealServlet extends HttpServlet {
             response.sendRedirect("meals");
 
         } else {
-            List<MealTo> mealsTo = filteredByStreams(mealCrud.getList(), LocalTime.of(0, 0),
-                    LocalTime.of(23, 59), 2000);
+            List<MealTo> mealsTo = filteredByStreams(mealCrud.getList(), LocalTime.MIN,
+                    LocalTime.MAX, 2000);
             mealsTo.sort(Comparator.comparing(MealTo::getDateTime));
 
             listMealsTo(request, response, mealsTo);
@@ -104,7 +104,7 @@ public class MealServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setAttribute("action", action);
         request.setAttribute("meal", meal);
-        request.getRequestDispatcher(EDIT_MEALS_JSP).forward(request, response);
+        request.getRequestDispatcher(MEAL_JSP).forward(request, response);
     }
 
     private void listMealsTo(HttpServletRequest request, HttpServletResponse response, List<MealTo> mealsTo)
