@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -52,7 +53,7 @@ public class MealServlet extends HttpServlet {
 
         switch (action.toLowerCase()) {
             case actionAdd:
-                Meal newMeal = new Meal(LocalDateTime.now().withSecond(0).withNano(0), "", 0);
+                Meal newMeal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0);
                 log.debug("Adding {}", newMeal);
                 editMeal(request, response, newMeal);
                 break;

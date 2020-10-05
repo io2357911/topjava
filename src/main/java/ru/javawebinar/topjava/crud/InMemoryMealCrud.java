@@ -21,15 +21,7 @@ public class InMemoryMealCrud implements ICrud<Meal> {
 
     @Override
     public Meal update(Meal meal) {
-        if (mealMap.containsKey(meal.getId())) {
-            Meal newMeal = new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories());
-            mealMap.put(meal.getId(), newMeal);
-            return newMeal;
-        } else {
-            // It's better to throw MealNotFoundException(),
-            // but currently we don't bother with it
-            return null;
-        }
+        return mealMap.replace(meal.getId(), meal) == null ? null : meal;
     }
 
     @Override
