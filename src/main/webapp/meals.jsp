@@ -18,7 +18,7 @@
         <th colspan=2>Action</th>
     </tr>
     <c:forEach var="mealTo" items="${mealsTo}">
-        <tr style="color: ${(mealTo.excess) ? 'red' : 'black'};">
+        <tr style="color: ${(mealTo.excess) ? 'red' : 'green'};">
             <fmt:parseDate value="${mealTo.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
             <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedDateTime}"/></td>
             <td>${mealTo.description}</td>
