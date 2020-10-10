@@ -3,9 +3,11 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +53,13 @@ public class InMemoryMealRepository implements MealRepository {
         Map<Integer, Meal> userRepo = repository.get(userId);
         return userRepo == null ? null : userRepo.values().stream()
                 .sorted((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Meal> getFiltered(int userId, LocalDate startDate, LocalDate endDate) {
+        return getAll(userId).stream()
+                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, endDate))
                 .collect(Collectors.toList());
     }
 }
