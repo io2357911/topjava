@@ -38,7 +38,7 @@
     <hr/>
     <h2>Meals</h2>
     <h3>Filter</h3>
-    <form method="post" action="meals">
+    <form method="get" action="meals">
         <dl>
             <dt>From date:</dt>
             <dd><input type="date" value="" name="startDate"></dd>

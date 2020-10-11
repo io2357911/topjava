@@ -40,7 +40,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         return repository.values().stream()
-                .sorted(Comparator.comparing(User::getName))
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
     }
 

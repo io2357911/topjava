@@ -44,31 +44,17 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
 
-        if (id == null) {
-            LocalDate startDate = parseLocalDate(request, "startDate", LocalDate.MIN);
-            LocalDate endDate = parseLocalDate(request, "endDate", LocalDate.MAX);
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
 
-            LocalTime startTime = parseLocalTime(request, "startTime", LocalTime.MIN);
-            LocalTime endTime = parseLocalTime(request, "endTime", LocalTime.MAX);
-
-            List<MealTo> meals = controller.getFiltered(startDate, endDate, startTime, endTime);
-
-            request.setAttribute("meals", meals);
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-
+        if (meal.isNew()) {
+            controller.create(meal);
         } else {
-            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                    LocalDateTime.parse(request.getParameter("dateTime")),
-                    request.getParameter("description"),
-                    Integer.parseInt(request.getParameter("calories")));
-
-            if (meal.isNew()) {
-                controller.create(meal);
-            } else {
-                controller.update(meal.getId(), meal);
-            }
-            response.sendRedirect("meals");
+            controller.update(meal.getId(), meal);
         }
+        response.sendRedirect("meals");
     }
 
     @Override
@@ -91,7 +77,14 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                request.setAttribute("meals", controller.getAll());
+                List<MealTo> meals = controller.getFiltered(
+                        parseLocalDate(request, "startDate"),
+                        parseLocalDate(request, "endDate"),
+                        parseLocalTime(request, "startTime"),
+                        parseLocalTime(request, "endTime")
+                );
+
+                request.setAttribute("meals", meals);
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -102,13 +95,13 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 
-    static LocalDate parseLocalDate(HttpServletRequest request, String paramName, LocalDate defaultLocalDate) {
+    static LocalDate parseLocalDate(HttpServletRequest request, String paramName) {
         String date = request.getParameter(paramName);
-        return date == null || date.isEmpty() ? defaultLocalDate : LocalDate.parse(date);
+        return date == null || date.isEmpty() ? null : LocalDate.parse(date);
     }
 
-    static LocalTime parseLocalTime(HttpServletRequest request, String paramName, LocalTime defaultLocalTime) {
+    static LocalTime parseLocalTime(HttpServletRequest request, String paramName) {
         String time = request.getParameter(paramName);
-        return time == null || time.isEmpty() ? defaultLocalTime : LocalTime.parse(time);
+        return time == null || time.isEmpty() ? null : LocalTime.parse(time);
     }
 }

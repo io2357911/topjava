@@ -5,12 +5,9 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -21,12 +18,13 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(SecurityUtil.authUserId(), meal));
+        MealsUtil.meals.forEach(meal -> save(1, meal));
+        MealsUtil.secondUserMeals.forEach(meal -> save(2, meal));
     }
 
     @Override
     public Meal save(int userId, Meal meal) {
-        Map<Integer, Meal> userRepo = repository.computeIfAbsent(userId, key -> new ConcurrentHashMap<>());
+        Map<Integer, Meal> userRepo = repository.computeIfAbsent(userId, key -> new HashMap<>());
 
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
@@ -53,14 +51,14 @@ public class InMemoryMealRepository implements MealRepository {
     public List<Meal> getAll(int userId) {
         Map<Integer, Meal> userRepo = repository.get(userId);
         return userRepo == null ? new ArrayList<>() : userRepo.values().stream()
-                .sorted((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Meal> getFiltered(int userId, LocalDate startDate, LocalDate endDate) {
         return getAll(userId).stream()
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, endDate))
+                .filter(meal -> DateTimeUtil.isBetweenClosed(meal.getDate(), startDate, endDate))
                 .collect(Collectors.toList());
     }
 }
