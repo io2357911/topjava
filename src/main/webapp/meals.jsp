@@ -41,19 +41,19 @@
     <form method="get" action="meals">
         <dl>
             <dt>From date:</dt>
-            <dd><input type="date" value="" name="startDate"></dd>
+            <dd><input type="date" value="${param.startDate}" name="startDate"></dd>
         </dl>
         <dl>
             <dt>To date:</dt>
-            <dd><input type="date" value="" name="endDate"></dd>
+            <dd><input type="date" value="${param.endDate}" name="endDate"></dd>
         </dl>
         <dl>
             <dt>From time:</dt>
-            <dd><input type="time" value="" name="startTime"></dd>
+            <dd><input type="time" value="${param.startTime}" name="startTime"></dd>
         </dl>
         <dl>
             <dt>To time:</dt>
-            <dd><input type="time" value="" name="endTime"></dd>
+            <dd><input type="time" value="${param.endTime}" name="endTime"></dd>
         </dl>
         <button type="submit">Apply</button>
     </form>

@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
@@ -95,13 +96,13 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 
-    static LocalDate parseLocalDate(HttpServletRequest request, String paramName) {
+    private static LocalDate parseLocalDate(HttpServletRequest request, String paramName) {
         String date = request.getParameter(paramName);
-        return date == null || date.isEmpty() ? null : LocalDate.parse(date);
+        return StringUtils.isEmpty(date) ? null : LocalDate.parse(date);
     }
 
-    static LocalTime parseLocalTime(HttpServletRequest request, String paramName) {
+    private static LocalTime parseLocalTime(HttpServletRequest request, String paramName) {
         String time = request.getParameter(paramName);
-        return time == null || time.isEmpty() ? null : LocalTime.parse(time);
+        return StringUtils.isEmpty(time) ? null : LocalTime.parse(time);
     }
 }
