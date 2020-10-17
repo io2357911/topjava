@@ -11,7 +11,7 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
     public static final int USER_MEAL_ID = START_SEQ + 2;
-    public static final int ADMIN_MEAL_ID = START_SEQ + 9;
+    public static final int ADMIN_MEAL_ID = START_SEQ + 4;
 
     public static final Meal userMeal200130 = new Meal(USER_MEAL_ID,
             LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
@@ -39,6 +39,6 @@ public class MealTestData {
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }
