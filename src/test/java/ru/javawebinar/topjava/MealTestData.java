@@ -12,11 +12,12 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 public class MealTestData {
     public static final int USER_MEAL_ID = START_SEQ + 2;
     public static final int ADMIN_MEAL_ID = START_SEQ + 4;
+    public static final int NOT_FOUND = 10;
 
     public static final Meal userMeal200130 = new Meal(USER_MEAL_ID,
             LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
     public static final Meal userMeal200131 = new Meal(USER_MEAL_ID + 1,
-            LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
+            LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Завтрак", 1000);
 
     public static Meal getNew() {
         return new Meal(null, LocalDateTime.of(2021, Month.JANUARY, 31, 10, 0),
@@ -25,6 +26,7 @@ public class MealTestData {
 
     public static Meal getUpdated() {
         Meal updated = new Meal(userMeal200130);
+        updated.setDateTime(LocalDateTime.of(2021, Month.JANUARY, 30, 10, 0));
         updated.setDescription("Второй завтрак");
         updated.setCalories(250);
         return updated;

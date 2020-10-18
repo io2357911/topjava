@@ -49,9 +49,19 @@ public class MealServiceTest {
     }
 
     @Test
+    public void getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
+    }
+
+    @Test
     public void delete() {
         service.delete(USER_MEAL_ID, USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(USER_MEAL_ID, USER_ID));
+    }
+
+    @Test
+    public void deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
 
     @Test
@@ -68,6 +78,12 @@ public class MealServiceTest {
     }
 
     @Test
+    public void getBetweenInclusiveWithoutRanges() {
+        List<Meal> meals = service.getBetweenInclusive(null, null, USER_ID);
+        assertMatch(meals, userMeal200131, userMeal200130);
+    }
+
+    @Test
     public void getAll() {
         List<Meal> meals = service.getAll(USER_ID);
         assertMatch(meals, userMeal200131, userMeal200130);
@@ -75,9 +91,18 @@ public class MealServiceTest {
 
     @Test
     public void update() {
-        Meal updated = getUpdated();
+        Meal newMeal = getUpdated();
+        Meal updated = new Meal(newMeal);
         service.update(updated, USER_ID);
-        assertMatch(service.get(updated.getId(), USER_ID), updated);
+        newMeal.setId(updated.getId());
+        assertMatch(service.get(newMeal.getId(), USER_ID), newMeal);
+    }
+
+    @Test
+    public void updateNotFound() {
+        Meal updated = getUpdated();
+        updated.setId(NOT_FOUND);
+        assertThrows(NotFoundException.class, () -> service.update(updated, USER_ID));
     }
 
     @Test
@@ -89,10 +114,9 @@ public class MealServiceTest {
     @Test
     public void create() {
         Meal newMeal = getNew();
-        Meal created = service.create(newMeal, USER_ID);
-        Integer newId = created.getId();
-        newMeal.setId(newId);
+        Meal created = service.create(new Meal(newMeal), USER_ID);
+        newMeal.setId(created.getId());
         assertMatch(created, newMeal);
-        assertMatch(service.get(newId, USER_ID), newMeal);
+        assertMatch(service.get(newMeal.getId(), USER_ID), newMeal);
     }
 }
