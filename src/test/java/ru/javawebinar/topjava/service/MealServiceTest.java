@@ -92,9 +92,7 @@ public class MealServiceTest {
     @Test
     public void update() {
         Meal newMeal = getUpdated();
-        Meal updated = new Meal(newMeal);
-        service.update(updated, USER_ID);
-        newMeal.setId(updated.getId());
+        service.update(new Meal(newMeal), USER_ID);
         assertMatch(service.get(newMeal.getId(), USER_ID), newMeal);
     }
 
