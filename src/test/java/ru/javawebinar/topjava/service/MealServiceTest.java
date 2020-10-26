@@ -1,23 +1,25 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.ClassRule;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.StopWatch;
-import ru.javawebinar.topjava.TimeSpentSummary;
-import ru.javawebinar.topjava.TimeSpentTestWatcher;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -32,16 +34,29 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+
     @Autowired
     private MealService service;
 
-    private static StopWatch stopWatch = new StopWatch(MealServiceTest.class.getName());
+    private static final StringBuilder summary = new StringBuilder();
 
     @Rule
-    public TimeSpentTestWatcher timeSpentTestWatcher = new TimeSpentTestWatcher(stopWatch);
+    public final Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            String testLog = "Test " + description.getMethodName() + " finished in "
+                    + TimeUnit.NANOSECONDS.toMillis(nanos) + " ms";
+            log.info(testLog);
+            summary.append(testLog);
+            summary.append("\n");
+        }
+    };
 
-    @ClassRule
-    public static TimeSpentSummary timeSpentSummary = new TimeSpentSummary(stopWatch);
+    @AfterClass
+    public static void logSummary() {
+        log.info("Tests summary:\n{}", summary.toString());
+    }
 
     @Test
     public void delete() throws Exception {
