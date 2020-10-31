@@ -6,6 +6,8 @@ public class Profiles {
             JPA = "jpa",
             DATAJPA = "datajpa";
 
+//    public static final String REPOSITORY_IMPLEMENTATION = JDBC;
+//    public static final String REPOSITORY_IMPLEMENTATION = JPA;
     public static final String REPOSITORY_IMPLEMENTATION = DATAJPA;
 
     public static final String
@@ -14,16 +16,21 @@ public class Profiles {
 
     //  Get DB profile depending of DB driver in classpath
     public static String getActiveDbProfile() {
-        try {
-            Class.forName("org.postgresql.Driver");
+        if (hasClass("org.postgresql.Driver")) {
             return POSTGRES_DB;
+        } else if (hasClass("org.hsqldb.jdbcDriver")) {
+            return HSQL_DB;
+        } else {
+            throw new IllegalStateException("Could not find DB driver");
+        }
+    }
+
+    private static boolean hasClass(String name) {
+        try {
+            Class.forName(name);
+            return true;
         } catch (ClassNotFoundException ex) {
-            try {
-                Class.forName("org.hsqldb.jdbcDriver");
-                return Profiles.HSQL_DB;
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException("Could not find DB driver");
-            }
+            return false;
         }
     }
 }
