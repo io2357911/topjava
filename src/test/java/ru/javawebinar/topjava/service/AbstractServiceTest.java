@@ -51,5 +51,6 @@ public abstract class AbstractServiceTest<S> {
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
+        results.setLength(0);
     }
 }
