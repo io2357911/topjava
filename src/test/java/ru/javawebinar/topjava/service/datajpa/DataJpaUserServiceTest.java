@@ -1,9 +1,10 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava.service.datajpa;
 
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.UserTestData;
+import ru.javawebinar.topjava.service.UserServiceTest;
 
 import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.MealTestData.meals;
