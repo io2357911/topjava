@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
@@ -45,10 +44,6 @@ public class DataJpaUserRepository implements UserRepository {
 
     @Override
     public User getWithMeals(int id) {
-        User user = get(id);
-        if (user != null) {
-            Hibernate.initialize(user.getMeals());
-        }
-        return user;
+        return crudRepository.getWithMeals(id);
     }
 }

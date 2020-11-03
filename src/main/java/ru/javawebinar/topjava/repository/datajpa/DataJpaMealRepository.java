@@ -1,10 +1,8 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
@@ -50,12 +48,8 @@ public class DataJpaMealRepository implements MealRepository {
         return crudRepository.getBetweenHalfOpen(startDateTime, endDateTime, userId);
     }
 
+    @Override
     public Meal getWithUser(int id, int userId) {
-        Meal meal = get(id, userId);
-        if (meal == null) {
-            return null;
-        }
-        meal.setUser((User)Hibernate.unproxy(meal.getUser()));
-        return meal;
+        return crudRepository.getWithUser(id, userId);
     }
 }
