@@ -1,23 +1,18 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
-
-import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
-import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
 public class JspMealController extends AbstractMealController {
@@ -27,60 +22,54 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/meals")
-    public String getMeals(HttpServletRequest request, Model model) {
-        String result;
+    public String getMeals(Model model) {
+        model.addAttribute("meals", getAll());
+        return "meals";
+    }
 
-        String action = request.getParameter("action");
+    @GetMapping("/meals/create")
+    public String createMeal(Model model) {
+        final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
+        model.addAttribute("meal", meal);
+        return "mealForm";
+    }
 
-        switch (action == null ? "all" : action) {
-            case "delete" -> {
-                int id = getId(request);
-                delete(id);
-                result = "redirect:meals";
-            }
-            case "create", "update" -> {
-                final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        get(getId(request));
-                request.setAttribute("meal", meal);
-                result = "mealForm";
-            }
-            case "filter" -> {
-                LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
-                LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
-                LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
-                LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
-                request.setAttribute("meals", getBetween(startDate, startTime, endDate, endTime));
-                result = "meals";
-            }
-            default -> {
-                request.setAttribute("meals", getAll());
-                result = "meals";
-            }
-        }
+    @GetMapping("/meals/update")
+    public String updateMeal(@RequestParam int id, Model model) {
+        final Meal meal = get(id);
+        model.addAttribute("meal", meal);
+        return "mealForm";
+    }
 
-        return result;
+    @GetMapping("/meals/delete")
+    public String deleteMeal(@RequestParam int id) {
+        delete(id);
+        return "redirect:/meals";
+    }
+
+    @GetMapping("/meals/filtered")
+    public String getFiltered(
+            Model model,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime) {
+        model.addAttribute("meals", getBetween(startDate, startTime, endDate, endTime));
+        return "meals";
     }
 
     @PostMapping("/meals")
-    public String editMeal(HttpServletRequest request) throws UnsupportedEncodingException {
-        request.setCharacterEncoding("UTF-8");
-
-        Meal meal = new Meal(
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
-
-        if (!StringUtils.hasText(request.getParameter("id"))) {
+    public String editMeal(
+            @RequestParam(required = false) Integer id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
+            @RequestParam String description,
+            @RequestParam int calories) {
+        Meal meal = new Meal(dateTime, description, calories);
+        if (id == null) {
             create(meal);
         } else {
-            update(meal, getId(request));
+            update(meal, id);
         }
-        return "redirect:meals";
-    }
-
-    private int getId(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("id"));
-        return Integer.parseInt(paramId);
+        return "redirect:/meals";
     }
 }
