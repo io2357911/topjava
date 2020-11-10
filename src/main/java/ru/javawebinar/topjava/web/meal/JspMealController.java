@@ -24,28 +24,28 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping
-    public String getMeals(Model model) {
+    public String getAll(Model model) {
         model.addAttribute("meals", getAll());
         return "meals";
     }
 
     @GetMapping("create")
-    public String createMeal(Model model) {
+    public String create(Model model) {
         final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         model.addAttribute("meal", meal);
         return "mealForm";
     }
 
     @GetMapping("update")
-    public String updateMeal(@RequestParam int id, Model model) {
+    public String update(@RequestParam int id, Model model) {
         final Meal meal = get(id);
         model.addAttribute("meal", meal);
         return "mealForm";
     }
 
     @GetMapping("delete")
-    public String deleteMeal(@RequestParam int id) {
-        delete(id);
+    public String deleteOne(@RequestParam int id) {
+        super.delete(id);
         return "redirect:/meals";
     }
 
@@ -61,7 +61,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @PostMapping
-    public String editMeal(
+    public String edit(
             @RequestParam(required = false) Integer id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
             @RequestParam String description,
