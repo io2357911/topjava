@@ -126,6 +126,10 @@ public class User extends AbstractNamedEntity {
         return enabled;
     }
 
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public Set<Role> getRoles() {
         return roles;
     }

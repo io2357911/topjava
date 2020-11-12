@@ -5,7 +5,6 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -62,14 +61,16 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     private void addRoles(User user) {
-        List<Map<String, Object>> batchValues = new ArrayList<>();
-        for (Role role : user.getRoles()) {
-            batchValues.add(new MapSqlParameterSource("user_id", user.getId())
-                    .addValue("role", role.name())
-                    .getValues());
-        }
+        var batchValues = user.getRoles().stream()
+                .map(role -> {
+                            var map = new HashMap<>();
+                            map.put("user_id", user.getId());
+                            map.put("role", role.name());
+                            return map;
+                        }
+                ).toArray(Map[]::new);
         namedParameterJdbcTemplate.batchUpdate("insert into user_roles (user_id, role) values(:user_id,:role)",
-                batchValues.toArray(Map[]::new));
+                batchValues);
     }
 
     @Override
@@ -127,7 +128,9 @@ public class JdbcUserRepository implements UserRepository {
 
             var role = rs.getString("role");
             if (role != null) {
-                user.getRoles().add(Role.valueOf(role));
+                var roles = user.getRoles();
+                roles.add(Role.valueOf(role));
+                user.setRoles(roles);
             }
         }
         return List.copyOf(map.values());

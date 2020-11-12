@@ -49,7 +49,9 @@ public class DataJpaUserRepository implements UserRepository {
     public User getWithMeals(int id) {
         User user = crudRepository.getWithMeals(id);
         if (user != null) {
-            removeDuplicates(user.getMeals());
+            var meals = user.getMeals();
+            removeDuplicates(meals);
+            user.setMeals(meals);
         }
         return user;
     }
