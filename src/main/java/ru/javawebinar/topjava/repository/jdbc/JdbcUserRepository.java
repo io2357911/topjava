@@ -13,7 +13,6 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.sql.SQLException;
 import java.util.*;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.validate;
@@ -105,25 +104,18 @@ public class JdbcUserRepository implements UserRepository {
         while (rs.next()) {
             var id = rs.getInt("id");
 
-            var user = map.computeIfAbsent(id, v -> {
-                        try {
-                            return new User(
-                                    id,
-                                    rs.getString("name"),
-                                    rs.getString("email"),
-                                    rs.getString("password"),
-                                    rs.getInt("calories_per_day"),
-                                    rs.getBoolean("enabled"),
-                                    rs.getDate("registered"),
-                                    Collections.EMPTY_SET);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-            );
+            var user = map.get(id);
             if (user == null) {
-                break;
+                user = new User(
+                        id,
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getInt("calories_per_day"),
+                        rs.getBoolean("enabled"),
+                        rs.getDate("registered"),
+                        Collections.EMPTY_SET);
+                map.put(id, user);
             }
 
             var role = rs.getString("role");
