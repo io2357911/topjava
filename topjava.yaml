@@ -1,0 +1,483 @@
+swagger: '2.0'
+info:
+  description: Api Documentation
+  version: '1.0'
+  title: Api Documentation
+  termsOfService: 'urn:tos'
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+host: 'localhost:8080'
+tags:
+  - name: admin-rest-controller
+    description: Admin Rest Controller
+  - name: jsp-meal-controller
+    description: Jsp Meal Controller
+  - name: profile-rest-controller
+    description: Profile Rest Controller
+  - name: root-controller
+    description: Root Controller
+paths:
+  /topjava/:
+    get:
+      tags:
+        - root-controller
+      summary: root
+      operationId: rootUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/meals:
+    get:
+      tags:
+        - root-controller
+      summary: getMeals
+      operationId: getMealsUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - jsp-meal-controller
+      summary: updateOrCreate
+      operationId: updateOrCreateUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/meals/create:
+    get:
+      tags:
+        - jsp-meal-controller
+      summary: create
+      operationId: createUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/meals/delete:
+    get:
+      tags:
+        - jsp-meal-controller
+      summary: delete
+      operationId: deleteUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/meals/filter:
+    get:
+      tags:
+        - jsp-meal-controller
+      summary: getBetween
+      operationId: getBetweenUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/meals/update:
+    get:
+      tags:
+        - jsp-meal-controller
+      summary: update
+      operationId: updateUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/rest/admin/users:
+    get:
+      tags:
+        - admin-rest-controller
+      summary: getAll
+      operationId: getAllUsingGET
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - admin-rest-controller
+      summary: createWithLocation
+      operationId: createWithLocationUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/rest/admin/users/by:
+    get:
+      tags:
+        - admin-rest-controller
+      summary: getByMail
+      operationId: getByMailUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: query
+          description: email
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/topjava/rest/admin/users/{id}':
+    get:
+      tags:
+        - admin-rest-controller
+      summary: get
+      operationId: getUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - admin-rest-controller
+      summary: update
+      operationId: updateUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int32
+        - in: body
+          name: user
+          description: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: Created
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - admin-rest-controller
+      summary: delete
+      operationId: deleteUsingDELETE
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /topjava/rest/profile:
+    get:
+      tags:
+        - profile-rest-controller
+      summary: get
+      operationId: getUsingGET_1
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - profile-rest-controller
+      summary: update
+      operationId: updateUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: user
+          description: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: Created
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - profile-rest-controller
+      summary: delete
+      operationId: deleteUsingDELETE_1
+      produces:
+        - '*/*'
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /topjava/rest/profile/text:
+    get:
+      tags:
+        - profile-rest-controller
+      summary: testUTF
+      operationId: testUTFUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /topjava/users:
+    get:
+      tags:
+        - root-controller
+      summary: getUsers
+      operationId: getUsersUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - root-controller
+      summary: setUser
+      operationId: setUserUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+definitions:
+  Meal:
+    type: object
+    properties:
+      calories:
+        type: integer
+        format: int32
+      dateTime:
+        type: string
+        format: date-time
+      description:
+        type: string
+      id:
+        type: integer
+        format: int32
+      user:
+        $ref: '#/definitions/User'
+    title: Meal
+  User:
+    type: object
+    properties:
+      caloriesPerDay:
+        type: integer
+        format: int32
+      email:
+        type: string
+      enabled:
+        type: boolean
+      id:
+        type: integer
+        format: int32
+      meals:
+        type: array
+        items:
+          $ref: '#/definitions/Meal'
+      name:
+        type: string
+      password:
+        type: string
+      registered:
+        type: string
+        format: date-time
+      roles:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+    title: User
