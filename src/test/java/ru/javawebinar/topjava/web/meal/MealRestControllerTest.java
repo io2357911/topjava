@@ -84,9 +84,18 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void getFiltered() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL
-                + "filter?startDateTime=2020-01-30T10:01&endDateTime=2020-01-30T14:00"))
+                + "filter?startDate=2020-01-30&endDate=2020-01-30&startTime=10:01&endTime=14:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEALTO_MATCHER.contentJson(getTos(List.of(meal2))));
+    }
+
+    @Test
+    void getFilteredWithNull() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL
+                + "filter?startDate=2020-01-30&endDate=2020-01-30&startTime=10:01"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEALTO_MATCHER.contentJson(getTos(List.of(meal3, meal2))));
     }
 }
