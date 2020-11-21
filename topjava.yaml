@@ -14,6 +14,8 @@ tags:
     description: Admin Rest Controller
   - name: jsp-meal-controller
     description: Jsp Meal Controller
+  - name: meal-rest-controller
+    description: Meal Rest Controller
   - name: profile-rest-controller
     description: Profile Rest Controller
   - name: root-controller
@@ -310,12 +312,59 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+  /topjava/rest/meals:
+    get:
+      tags:
+        - meal-rest-controller
+      summary: getAll
+      operationId: getAllUsingGET_1
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MealTo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/topjava/rest/meals/{id}':
+    get:
+      tags:
+        - meal-rest-controller
+      summary: get
+      operationId: getUsingGET_1
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Meal'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   /topjava/rest/profile:
     get:
       tags:
         - profile-rest-controller
       summary: get
-      operationId: getUsingGET_1
+      operationId: getUsingGET_2
       produces:
         - application/json
       responses:
@@ -448,6 +497,23 @@ definitions:
       user:
         $ref: '#/definitions/User'
     title: Meal
+  MealTo:
+    type: object
+    properties:
+      calories:
+        type: integer
+        format: int32
+      dateTime:
+        type: string
+        format: date-time
+      description:
+        type: string
+      excess:
+        type: boolean
+      id:
+        type: integer
+        format: int32
+    title: MealTo
   User:
     type: object
     properties:
