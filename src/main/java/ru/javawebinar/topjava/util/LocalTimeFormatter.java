@@ -6,7 +6,7 @@ import java.util.Locale;
 public final class LocalTimeFormatter extends AbstractFormatter<LocalTime> {
 
     public LocalTimeFormatter(String pattern) {
-        super(pattern);
+        super(pattern.isEmpty() ? "HH:mm" : pattern);
     }
 
     @Override

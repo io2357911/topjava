@@ -6,7 +6,7 @@ import java.util.Locale;
 public final class LocalDateFormatter extends AbstractFormatter<LocalDate> {
 
     public LocalDateFormatter(String pattern) {
-        super(pattern);
+        super(pattern.isEmpty() ? "yyyy-MM-dd" : pattern);
     }
 
     @Override
