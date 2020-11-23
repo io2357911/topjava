@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.LocalDateFormatter;
-import ru.javawebinar.topjava.util.LocalTimeFormatter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,9 +20,7 @@ public class MealRestController extends AbstractMealController {
 
     static final String REST_URL = "/rest/meals";
 
-    private final LocalDateFormatter localDateFormatter = new LocalDateFormatter("yyyy-MM-dd");
-    private final LocalTimeFormatter localTimeFormatter = new LocalTimeFormatter("HH:mm");
-
+    @Override
     @GetMapping
     public List<MealTo> getAll() {
         return super.getAll();
@@ -55,11 +51,12 @@ public class MealRestController extends AbstractMealController {
         super.update(meal, id);
     }
 
+    @Override
     @GetMapping("/filter")
-    public List<MealTo> getFiltered(
+    public List<MealTo> getBetween(
             @RequestParam(required = false) @DateTimeFormat LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat LocalDate endDate,
             @RequestParam(required = false) @DateTimeFormat LocalTime startTime,
+            @RequestParam(required = false) @DateTimeFormat LocalDate endDate,
             @RequestParam(required = false) @DateTimeFormat LocalTime endTime) {
         return super.getBetween(startDate, startTime, endDate, endTime);
     }

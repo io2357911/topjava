@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util;
+package ru.javawebinar.topjava.web.formatter;
 
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.Formatter;
@@ -22,19 +22,19 @@ public class LocalDateTimeAnnotationFormatterFactory implements AnnotationFormat
 
     @Override
     public Printer<?> getPrinter(DateTimeFormat annotation, Class<?> fieldType) {
-        return configureFormatterFrom(annotation, fieldType);
+        return configureFormatterFrom(fieldType);
     }
 
     @Override
     public Parser<?> getParser(DateTimeFormat annotation, Class<?> fieldType) {
-        return configureFormatterFrom(annotation, fieldType);
+        return configureFormatterFrom(fieldType);
     }
 
-    private Formatter<?> configureFormatterFrom(DateTimeFormat annotation, Class<?> fieldType) {
+    private Formatter<?> configureFormatterFrom(Class<?> fieldType) {
         if (fieldType.equals(LocalDate.class)) {
-            return new LocalDateFormatter(annotation.pattern());
+            return new LocalDateFormatter();
         } else {
-            return new LocalTimeFormatter(annotation.pattern());
+            return new LocalTimeFormatter();
         }
     }
 }

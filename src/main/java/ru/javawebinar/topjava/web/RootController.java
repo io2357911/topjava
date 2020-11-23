@@ -39,8 +39,9 @@ public class RootController {
 
     @GetMapping("/meals")
     public String getMeals(Model model) {
+        var user = userService.get(SecurityUtil.authUserId());
         model.addAttribute("meals",
-                MealsUtil.getTos(mealService.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay()));
+                MealsUtil.getTos(mealService.getAll(user.getId()), user.getCaloriesPerDay()));
         return "meals";
     }
 }
