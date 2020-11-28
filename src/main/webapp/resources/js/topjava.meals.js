@@ -1,5 +1,11 @@
 var ctx;
 
+function updateTable() {
+    $.get(ctx.ajaxUrl + "filter", $('#filterForm').serialize(), function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
 // $(document).ready(function () {
 $(function () {
     // https://stackoverflow.com/a/5064235/548473
@@ -35,5 +41,11 @@ $(function () {
             ]
         })
     };
-    makeEditable();
+
+    makeEditable(updateTable);
 });
+
+function resetFilter() {
+    $('#filterForm').find(":input").val("");
+    updateTable()
+}

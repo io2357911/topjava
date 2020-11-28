@@ -1,6 +1,7 @@
 var form;
+var updateTable;
 
-function makeEditable() {
+function makeEditable(updTable = null) {
     form = $('#detailsForm');
     $(".delete").click(function () {
         if (confirm('Are you sure?')) {
@@ -14,6 +15,15 @@ function makeEditable() {
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
     $.ajaxSetup({cache: false});
+
+    updateTable = updTable;
+    if (!updateTable) {
+        updateTable = function () {
+            $.get(ctx.ajaxUrl, function (data) {
+                ctx.datatableApi.clear().rows.add(data).draw();
+            });
+        }
+    }
 }
 
 function add() {
@@ -28,12 +38,6 @@ function deleteRow(id) {
     }).done(function () {
         updateTable();
         successNoty("Deleted");
-    });
-}
-
-function updateTable() {
-    $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
     });
 }
 
