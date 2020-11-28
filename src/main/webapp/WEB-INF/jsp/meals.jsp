@@ -2,63 +2,63 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
+
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
-<section>
-    <h3><spring:message code="meal.title"/></h3>
-
-    <form method="get" action="meals/filter">
-        <dl>
-            <dt><spring:message code="meal.startDate"/>:</dt>
-            <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.endDate"/>:</dt>
-            <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.startTime"/>:</dt>
-            <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.endTime"/>:</dt>
-            <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
-        </dl>
-        <button type="submit"><spring:message code="meal.filter"/></button>
-    </form>
-    <hr>
-    <a href="meals/create"><spring:message code="meal.add"/></a>
-    <hr>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-        <tr>
-            <th><spring:message code="meal.dateTime"/></th>
-            <th><spring:message code="meal.description"/></th>
-            <th><spring:message code="meal.calories"/></th>
-            <th></th>
-            <th></th>
-        </tr>
-        </thead>
-        <c:forEach items="${meals}" var="meal">
-            <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.MealTo"/>
-            <tr data-mealExcess="${meal.excess}">
-                <td>
-                        <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                        <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
-                        <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
-                        ${fn:formatDateTime(meal.dateTime)}
-                </td>
-                <td>${meal.description}</td>
-                <td>${meal.calories}</td>
-                <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
-                <td><a href="meals/delete?id=${meal.id}"><spring:message code="common.delete"/></a></td>
+<div class="jumbotron pt-4">
+    <div class="container">
+        <h3 class="text-center"><spring:message code="meal.title"/></h3>
+        <form class="pt-3" method="get" action="meals/filter">
+            <div class="form-group row">
+                <label for="staticStartDate" class="col-sm-2 col-form-label"><spring:message code="meal.startDate"/></label>
+                <input class="col-sm-3 form-control" id="staticStartDate" type="date" name="startDate" value="${param.startDate}">
+                <label for="staticEndDate" class="col-sm-2 col-form-label"><spring:message code="meal.endDate"/></label>
+                <input class="col-sm-3 form-control" id="staticEndDate" type="date" name="endDate" value="${param.endDate}">
+            </div>
+            <div class="form-group row">
+                <label for="staticStartTime" class="col-sm-2 col-form-label"><spring:message code="meal.startTime"/></label>
+                <input class="col-sm-3 form-control" id="staticStartTime" type="time" name="startTime" value="${param.startTime}">
+                <label for="staticEndTime" class="col-sm-2 col-form-label"><spring:message code="meal.endTime"/></label>
+                <input class="col-sm-3 form-control" id="staticEndTime" type="time" name="endTime" value="${param.endTime}">
+            </div>
+            <button class="btn btn-primary" type="submit"><spring:message code="meal.filter"/></button>
+        </form>
+        <button class="btn btn-primary" onclick="add()">
+            <span class="fa fa-plus"></span>
+            <spring:message code="common.add"/>
+        </button>
+        <table class="table table-striped" id="datatable">
+            <thead>
+            <tr>
+                <th><spring:message code="meal.dateTime"/></th>
+                <th><spring:message code="meal.description"/></th>
+                <th><spring:message code="meal.calories"/></th>
+                <th></th>
+                <th></th>
             </tr>
-        </c:forEach>
-    </table>
-</section>
+            </thead>
+            <c:forEach items="${meals}" var="meal">
+                <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
+                <tr data-mealExcess="${meal.excess}">
+                    <td>
+                            <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
+                            <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
+                            <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
+                            ${fn:formatDateTime(meal.dateTime)}
+                    </td>
+                    <td>${meal.description}</td>
+                    <td>${meal.calories}</td>
+                    <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
+                    <td><a href="meals/delete?id=${meal.id}"><spring:message code="common.delete"/></a></td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
+</div>
+
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
