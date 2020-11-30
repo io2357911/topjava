@@ -1,9 +1,7 @@
 var ctx;
 
 function updateTable() {
-    $.get(ctx.ajaxUrl + "filter", $('#filterForm').serialize(), function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-    });
+    $.get(ctx.ajaxUrl + "filter", $('#filterForm').serialize(), fillTable);
 }
 
 // $(document).ready(function () {
@@ -46,6 +44,6 @@ $(function () {
 });
 
 function resetFilter() {
-    $('#filterForm').find(":input").val("");
+    $('#filterForm')[0].reset();
     updateTable()
 }

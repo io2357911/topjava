@@ -14,6 +14,7 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,6 +67,17 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void enable() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + USER_ID)
+                .param("enabled", "false"))
+                .andExpect(status().isNoContent());
+
+        var user = new User(UserTestData.user);
+        user.setEnabled(false);
+        USER_MATCHER.assertMatch(userService.get(USER_ID), user);
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         User newUser = UserTestData.getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -90,6 +102,8 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
+        assumeTrue(isDataJpaBased(), "getWithMeals() is not implemented (DATA JPA only)");
+
         perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meals"))
                 .andExpect(status().isOk())
                 .andDo(print())

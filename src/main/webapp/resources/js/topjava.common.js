@@ -5,7 +5,7 @@ function makeEditable(updTable = null) {
     form = $('#detailsForm');
     $(".delete").click(function () {
         if (confirm('Are you sure?')) {
-            deleteRow($(this).parents("tr").attr("id"));
+            deleteRow($(this).closest("tr").attr("id"));
         }
     });
 
@@ -19,9 +19,7 @@ function makeEditable(updTable = null) {
     updateTable = updTable;
     if (!updateTable) {
         updateTable = function () {
-            $.get(ctx.ajaxUrl, function (data) {
-                ctx.datatableApi.clear().rows.add(data).draw();
-            });
+            $.get(ctx.ajaxUrl, fillTable);
         }
     }
 }
@@ -79,4 +77,8 @@ function failNoty(jqXHR) {
         type: "error",
         layout: "bottomRight"
     }).show();
+}
+
+function fillTable(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
 }
