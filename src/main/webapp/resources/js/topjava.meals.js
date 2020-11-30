@@ -1,9 +1,5 @@
 var ctx;
 
-function updateTable() {
-    $.get(ctx.ajaxUrl + "filter", $('#filterForm').serialize(), fillTable);
-}
-
 // $(document).ready(function () {
 $(function () {
     // https://stackoverflow.com/a/5064235/548473
@@ -37,13 +33,15 @@ $(function () {
                     "desc"
                 ]
             ]
-        })
+        }),
+        updateTable: function () {
+            $.get(ctx.ajaxUrl + "filter", $('#filterForm').serialize(), fillTable);
+        }
     };
-
-    makeEditable(updateTable);
+    makeEditable();
 });
 
 function resetFilter() {
     $('#filterForm')[0].reset();
-    updateTable()
+    ctx.updateTable()
 }

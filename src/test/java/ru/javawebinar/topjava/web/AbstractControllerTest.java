@@ -27,9 +27,6 @@ import javax.annotation.PostConstruct;
 @ActiveProfiles(resolver = AllActiveProfileResolver.class)
 public abstract class AbstractControllerTest {
 
-    @Autowired
-    public Environment env;
-
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
     static {
@@ -41,6 +38,9 @@ public abstract class AbstractControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private Environment env;
 
     @PostConstruct
     private void postConstruct() {
