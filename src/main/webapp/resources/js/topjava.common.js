@@ -44,6 +44,11 @@ function updateTableByData(data) {
 }
 
 function save() {
+    $('#dateTime').each(function() {
+        let isoDate = $(this).val().replace(' ', 'T');
+        $(this).val(isoDate);
+    });
+
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
