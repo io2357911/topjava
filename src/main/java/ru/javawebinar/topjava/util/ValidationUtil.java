@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.util;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
@@ -81,6 +82,8 @@ public class ValidationUtil {
         String errorFieldsMsg = result.getFieldErrors().stream()
                 .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
                 .collect(Collectors.joining("<br>"));
-        return ResponseEntity.unprocessableEntity().body(errorFieldsMsg);
+        return ResponseEntity.unprocessableEntity()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(errorFieldsMsg);
     }
 }
