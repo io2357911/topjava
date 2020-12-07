@@ -47,8 +47,7 @@ public class MealUIController extends AbstractMealController {
         }
         if (mealTo.isNew()) {
             super.create(mealTo);
-        }
-        else {
+        } else {
             super.update(mealTo, mealTo.id());
         }
         return ResponseEntity.ok().build();

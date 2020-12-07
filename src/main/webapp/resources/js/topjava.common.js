@@ -44,7 +44,8 @@ function updateTableByData(data) {
 }
 
 function save() {
-    $('#dateTime').each(function() {
+    let formCopy = form.clone()
+    formCopy.find("#dateTime").each(function () {
         let isoDate = $(this).val().replace(' ', 'T');
         $(this).val(isoDate);
     });
@@ -52,7 +53,7 @@ function save() {
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
-        data: form.serialize()
+        data: formCopy.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();
