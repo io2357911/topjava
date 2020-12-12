@@ -22,6 +22,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.util.UserUtil.getMessage;
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
 @RestControllerAdvice(annotations = RestController.class)
@@ -39,7 +40,9 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
-        return logAndGetErrorInfo(req, e, true, DATA_ERROR);
+        var rootCause = ValidationUtil.getRootCause(e);
+        var detail = getMessage(rootCause);
+        return logAndGetErrorInfo(req, e, rootCause, true, DATA_ERROR, detail);
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
@@ -51,7 +54,10 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
     @ExceptionHandler(BindException.class)
     public ErrorInfo bindException(HttpServletRequest req, BindException e) {
-        return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR);
+        var detail = e.getFieldErrors().stream()
+                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+                .collect(Collectors.joining("<br>"));
+        return logAndGetErrorInfo(req, e, ValidationUtil.getRootCause(e), true, VALIDATION_ERROR, detail);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -60,25 +66,21 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(req, e, true, APP_ERROR);
     }
 
-    //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
     private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
-        Throwable rootCause = ValidationUtil.getRootCause(e);
+        return logAndGetErrorInfo(req, e, ValidationUtil.getRootCause(e), logException, errorType, null);
+    }
+
+    //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, Throwable rootCause,
+                                                boolean logException, ErrorType errorType, String detail) {
+        if (detail == null) {
+            detail = rootCause.toString();
+        }
         if (logException) {
             log.error(errorType + " at request " + req.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, getDetail(rootCause));
-    }
-
-    private static String getDetail(Throwable e) {
-        if (e instanceof BindException) {
-            var bindException = (BindException)e;
-            return bindException.getFieldErrors().stream()
-                    .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                    .collect(Collectors.joining("<br>"));
-        } else {
-            return e.toString();
-        }
+        return new ErrorInfo(req.getRequestURL(), errorType, detail);
     }
 }

@@ -32,4 +32,9 @@ public class UserUtil {
         user.setEmail(user.getEmail().toLowerCase());
         return user;
     }
+
+    public static String getMessage(Throwable rootCause) {
+        return rootCause.getMessage().contains("users_unique_email_idx")
+                ? "User with this email already exists" : null;
+    }
 }
