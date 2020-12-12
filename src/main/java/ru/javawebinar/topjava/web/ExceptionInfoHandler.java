@@ -22,12 +22,14 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.UserUtil.getMessage;
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
 @RestControllerAdvice(annotations = RestController.class)
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ExceptionInfoHandler {
+    public static final String DUPLICATE_USER_EMAIL_DETAIL = "User with this email already exists";
+    public static final String DUPLICATE_MEAL_DATE_DETAIL = "Meal with this date already exists";
+
     private static Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
 
     //  http://stackoverflow.com/a/22358422/548473
@@ -41,7 +43,7 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
         var rootCause = ValidationUtil.getRootCause(e);
-        var detail = getMessage(rootCause);
+        var detail = getDetail(rootCause);
         return logAndGetErrorInfo(req, e, rootCause, true, DATA_ERROR, detail);
     }
 
@@ -82,5 +84,15 @@ public class ExceptionInfoHandler {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
         return new ErrorInfo(req.getRequestURL(), errorType, detail);
+    }
+
+    public static String getDetail(Throwable rootCause) {
+        var message = rootCause.getMessage();
+        if (message.contains("users_unique_email_idx")) {
+            return DUPLICATE_USER_EMAIL_DETAIL;
+        } else if (message.contains("meals_unique_user_datetime_idx")) {
+            return DUPLICATE_MEAL_DATE_DETAIL;
+        }
+        return null;
     }
 }

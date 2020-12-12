@@ -13,7 +13,7 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-import static ru.javawebinar.topjava.util.UserUtil.getMessage;
+import static ru.javawebinar.topjava.web.ExceptionInfoHandler.getDetail;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ModelAndView conflict(HttpServletRequest req, DataIntegrityViolationException e) {
         var rootCause = ValidationUtil.getRootCause(e);
-        var message = getMessage(rootCause);
+        var message = getDetail(rootCause);
         return logAndGetModelAndView(req, e, rootCause, HttpStatus.UNPROCESSABLE_ENTITY, message);
     }
 

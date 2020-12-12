@@ -35,10 +35,16 @@ public class TestUtil {
     }
 
     public static ResultMatcher errorInfo(String url, ErrorType type) {
+        return errorInfo(url, type, null);
+    }
+
+    public static ResultMatcher errorInfo(String url, ErrorType type, String detail) {
         return result -> {
             var error = readFromJsonMvcResult(result, ErrorInfo.class);
             assertEquals("http://localhost" + url, error.getUrl());
             assertEquals(type, error.getType());
+            if (detail != null)
+                assertEquals(detail, error.getDetail());
         };
     }
 
