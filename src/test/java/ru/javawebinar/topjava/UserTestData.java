@@ -51,6 +51,11 @@ public class UserTestData {
         return updated;
     }
 
+    public static User getInvalid(User user) {
+        user.setEmail("");
+        return user;
+    }
+
     public static String jsonWithPassword(User user, String passw) {
         return JsonUtil.writeAdditionProps(user, "password", passw);
     }
