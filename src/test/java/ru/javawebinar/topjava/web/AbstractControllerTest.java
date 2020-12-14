@@ -2,11 +2,13 @@ package ru.javawebinar.topjava.web;
 
 import org.junit.jupiter.api.Assumptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +16,18 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javawebinar.topjava.AllActiveProfileResolver;
 import ru.javawebinar.topjava.Profiles;
+import ru.javawebinar.topjava.TestUtil;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 
 import javax.annotation.PostConstruct;
 
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static ru.javawebinar.topjava.util.Util.localize;
 
 @SpringJUnitWebConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -35,12 +45,17 @@ public abstract class AbstractControllerTest {
     @Autowired
     public Environment env;
 
+    @Autowired
+    private MessageSource messageSource;
+
     static {
         CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
         CHARACTER_ENCODING_FILTER.setForceEncoding(true);
     }
 
     private MockMvc mockMvc;
+
+    private final Locale locale = new Locale("ru");
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -60,5 +75,21 @@ public abstract class AbstractControllerTest {
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    public ResultMatcher errorInfo(String url, ErrorType type) {
+        return errorInfo(url, type, null);
+    }
+
+    public ResultMatcher errorInfo(String url, ErrorType type, String detail) {
+        return result -> {
+            var error = TestUtil.readFromJsonMvcResult(result, ErrorInfo.class);
+            assertEquals("http://localhost" + url, error.getUrl());
+            assertEquals(type, error.getType());
+            if (detail != null) {
+                String[] details = {localize(detail, messageSource, locale)};
+                assertArrayEquals(details, error.getDetails());
+            }
+        };
     }
 }

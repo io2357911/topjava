@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,18 +12,9 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-import static ru.javawebinar.topjava.web.ExceptionInfoHandler.getDetail;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ModelAndView conflict(HttpServletRequest req, DataIntegrityViolationException e) {
-        var rootCause = ValidationUtil.getRootCause(e);
-        var message = getDetail(rootCause);
-        return logAndGetModelAndView(req, e, rootCause, HttpStatus.UNPROCESSABLE_ENTITY, message);
-    }
 
     @ExceptionHandler(Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
