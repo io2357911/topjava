@@ -58,6 +58,7 @@ public class ProfileUIController extends AbstractUserController {
             status.setComplete();
             return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
         } catch (DataIntegrityViolationException ex) {
+            model.addAttribute("register", true);
             result.rejectValue("email", DUPLICATE_USER_EMAIL_DETAIL);
             return "profile";
         }

@@ -41,7 +41,7 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(NotFoundException.class)
     public ErrorInfo handleError(HttpServletRequest req, NotFoundException e) {
-        return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND);
+        return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND, null);
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
@@ -55,7 +55,7 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
     @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ErrorInfo illegalRequestDataError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
+        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, null);
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
@@ -70,11 +70,7 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorInfo handleError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, true, APP_ERROR);
-    }
-
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
-        return logAndGetErrorInfo(req, ValidationUtil.getRootCause(e), logException, errorType, null);
+        return logAndGetErrorInfo(req, e, true, APP_ERROR, null);
     }
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
@@ -91,7 +87,7 @@ public class ExceptionInfoHandler {
         return new ErrorInfo(req.getRequestURL(), errorType, details);
     }
 
-    public static String getDetail(Throwable rootCause, MessageSource messageSource) {
+    private static String getDetail(Throwable rootCause, MessageSource messageSource) {
         var message = rootCause.getMessage();
         if (message.contains("users_unique_email_idx")) {
             return localize(DUPLICATE_USER_EMAIL_DETAIL, messageSource);

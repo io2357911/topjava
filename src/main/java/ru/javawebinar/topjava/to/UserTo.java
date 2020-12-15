@@ -22,7 +22,7 @@ public class UserTo extends BaseTo implements Serializable {
     private String email;
 
     @NotBlank
-    @Size(min = 5, max = 100)
+    @Size(min = 5, max = 32)
     private String password;
 
     @Range(min = 10, max = 10000)

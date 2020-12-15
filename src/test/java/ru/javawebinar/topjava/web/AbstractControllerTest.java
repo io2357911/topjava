@@ -42,20 +42,20 @@ public abstract class AbstractControllerTest {
 
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
+    static {
+        CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
+        CHARACTER_ENCODING_FILTER.setForceEncoding(true);
+    }
+
+    private static final Locale locale = new Locale("ru");
+
     @Autowired
     public Environment env;
 
     @Autowired
     private MessageSource messageSource;
 
-    static {
-        CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
-        CHARACTER_ENCODING_FILTER.setForceEncoding(true);
-    }
-
     private MockMvc mockMvc;
-
-    private final Locale locale = new Locale("ru");
 
     @Autowired
     private WebApplicationContext webApplicationContext;

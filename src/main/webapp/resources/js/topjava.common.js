@@ -95,8 +95,7 @@ function successNoty(key) {
 
 function failNoty(jqXHR) {
     closeNoty();
-    // jqHXR.responseJSON may be missing for a mysterious reason. Why?
-    const errorInfo = JSON.parse(jqXHR.responseText);
+    const errorInfo = jqXHR.responseJSON;
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status +
             "<br>" + errorInfo.type + "<br>" + errorInfo.details.join("<br>"),

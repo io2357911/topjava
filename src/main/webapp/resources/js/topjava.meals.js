@@ -20,10 +20,12 @@ function clearFilter() {
 $.ajaxSetup({
     converters: {
         "text json": function (stringData) {
-            var json = JSON.parse(stringData);
+            let json = JSON.parse(stringData);
             if (typeof json === 'object') {
                 $(json).each(function () {
-                    this.dateTime = this.dateTime.substr(0, 16).replace('T', ' ');
+                    if (this.dateTime) {
+                        this.dateTime = this.dateTime.substr(0, 16).replace('T', ' ');
+                    }
                 });
             }
             return json;
